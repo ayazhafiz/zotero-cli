@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
+	"regexp"
 )
 
 // A client for the Zotero API, belonging to a single user.
@@ -26,17 +26,45 @@ var EmptyItemKey = ItemKey{Value: ""}
 
 const baseApi = "https://api.zotero.org"
 
-func (c *Client) get(subroute string) []byte {
-	uri := fmt.Sprintf("%s/users/%s/%s", baseApi, c.userId.Value, subroute)
+// Sends a `GET` request to `subroute` and returns the raw bytes of the response
+// body, along with repsonse headers.
+func (c *Client) getUriWithHeaders(uri string) ([]byte, http.Header) {
 	req, _ := http.NewRequest(http.MethodGet, uri, nil)
 	req.Header.Add("Zotero-API-Version", "3")
 	req.Header.Add("Zotero-API-Key", c.apiKey)
 
-	fmt.Fprintf(os.Stderr, "URI: %s\n\n", uri)
-
 	res, _ := http.DefaultClient.Do(req)
 	bytes, _ := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	return bytes, res.Header
+}
+
+// Sends a `GET` request to `subroute` and returns the raw bytes of the response
+// body.
+func (c *Client) get(subroute string) []byte {
+	uri := fmt.Sprintf("%s/users/%s/%s", baseApi, c.userId.Value, subroute)
+	bytes, _ := c.getUriWithHeaders(uri)
 	return bytes
+}
+
+// https://www.zotero.org/support/dev/web_api/v3/basics#link_header
+var reNextPage = regexp.MustCompile(`.*<(.*)>; rel="next"`)
+
+// Like `get`, but for Zotero APIs that may be paginated. Returns a list of raw
+// byte reponses, one per page.
+func (c *Client) getWithPagination(subroute string) [][]byte {
+	var allBytes [][]byte
+	nextPage := fmt.Sprintf("%s/users/%s/%s", baseApi, c.userId.Value, subroute)
+	for true {
+		bytes, headers := c.getUriWithHeaders(nextPage)
+		allBytes = append(allBytes, bytes)
+		matchNextPage := reNextPage.FindStringSubmatch(headers.Get("Link"))
+		if matchNextPage == nil {
+			break
+		}
+		nextPage = matchNextPage[1]
+	}
+	return allBytes
 }
 
 func NewClient(apiKey string, userId string) Client {

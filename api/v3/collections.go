@@ -39,7 +39,7 @@ type rawCollection struct {
 	} `json:"data"`
 }
 
-func convertRaw(rc rawCollection) Collection {
+func convertRawCollection(rc rawCollection) Collection {
 	return Collection{
 		Name:              rc.Data.Name,
 		Key:               ItemKey{Value: rc.Key},
@@ -55,7 +55,7 @@ func unmarshalCollections(bytes []byte) []Collection {
 	json.Unmarshal(bytes, &raw)
 	collections := make([]Collection, len(raw))
 	for i, rc := range raw {
-		collections[i] = convertRaw(rc)
+		collections[i] = convertRawCollection(rc)
 	}
 	return collections
 }
