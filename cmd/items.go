@@ -4,6 +4,7 @@ import (
 	"fmt"
 	api "github.com/ayazhafiz/zotero-cli/api/v3"
 	"os"
+	"strings"
 
 	"github.com/ktr0731/go-fuzzyfinder"
 	"github.com/skratchdot/open-golang/open"
@@ -22,8 +23,11 @@ var itemsCmd = &cobra.Command{
 					return ""
 				}
 				item := &items[i]
-				return fmt.Sprintf("%s\n%s (%s)", item.Title,
-					api.PrintAuthors(item.Authors), item.ParsedDate)
+				body :=
+					fmt.Sprintf("%s\n%s (%s)", item.Title,
+						api.PrintAuthors(item.Authors), item.ParsedDate)
+				vPadding := (h - len(strings.Split("\n", body))) / 2
+				return strings.Repeat("\n", vPadding) + body
 			}),
 		)
 		if err != nil {
