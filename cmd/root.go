@@ -1,19 +1,19 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+	"path/filepath"
 
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
 
 var rootCmd = &cobra.Command{
-	Use:   "zotero-cli",
+	Use:   "zotero",
 	Short: "CLI tool for Zotero.",
-	Long:  "An interactive CLI application for the Zotero research library.",
+	Long:  `An interactive CLI application for the Zotero research library.`,
 }
 
 func Execute() {
@@ -24,25 +24,14 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.zotero-cli.yaml)")
-
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func initConfig() {
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
-	} else {
+	if cfgFile == "" {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
-
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".zotero-cli")
+		cfgFile = filepath.Join(home, ".zotero-cli.yaml")
 	}
-
+	viper.SetConfigFile(cfgFile)
 	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
 }
