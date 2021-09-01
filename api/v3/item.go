@@ -70,7 +70,7 @@ func convertRawItem(ri *rawItem) Item {
 	for i, tag := range ri.Data.Tags {
 		tags[i] = tag.Tag
 	}
-	collections := make([]ItemKey, len(ri.Data.Tags))
+	collections := make([]ItemKey, len(ri.Data.Collections))
 	for i, collectionKey := range ri.Data.Collections {
 		collections[i] = ItemKey{collectionKey}
 	}

@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"regexp"
+	"strconv"
+	"sync"
 )
 
 // A client for the Zotero API, belonging to a single user.
@@ -54,22 +55,37 @@ func (c *Client) get(subroute string) []byte {
 	return bytes
 }
 
-// https://www.zotero.org/support/dev/web_api/v3/basics#link_header
-var reNextPage = regexp.MustCompile(`.*<(.*)>; rel="next"`)
-
 // Like `get`, but for Zotero APIs that may be paginated. Returns a list of raw
 // byte reponses, one per page.
 func (c *Client) getWithPagination(subroute string) [][]byte {
+	uri := func(query string) string {
+		return fmt.Sprintf("%s/users/%d/%s?%s", baseApi, c.userId, subroute, query)
+	}
+
+	const limitPerPage = 50
+	_, headers := c.getUriWithHeaders(uri("limit=1"))
+	numItems, _ := strconv.Atoi(headers.Get("Total-Results"))
+
+	ch := make(chan []byte, 10)
+	var wg sync.WaitGroup
+
+	for start := 0; start < numItems; start += limitPerPage {
+		wg.Add(1)
+		go func(start int) {
+			defer wg.Done()
+			data, _ := c.getUriWithHeaders(uri(fmt.Sprintf("start=%d&limit=%d", start, limitPerPage)))
+			ch <- data
+		}(start)
+	}
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
 	var allBytes [][]byte
-	nextPage := fmt.Sprintf("%s/users/%d/%s", baseApi, c.userId, subroute)
-	for true {
-		bytes, headers := c.getUriWithHeaders(nextPage)
+	for bytes := range ch {
 		allBytes = append(allBytes, bytes)
-		matchNextPage := reNextPage.FindStringSubmatch(headers.Get("Link"))
-		if matchNextPage == nil {
-			break
-		}
-		nextPage = matchNextPage[1]
 	}
 	return allBytes
 }

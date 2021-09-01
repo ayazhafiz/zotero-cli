@@ -198,19 +198,22 @@ func TestGetItems(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	page1Resp := httpmock.NewStringResponse(200, page1)
-	page1Resp.Header.Set("Link", `<https://api.zotero.org/users/123/items/top?start=2>; rel="next", <https://api.zotero.org/users/123/items/top?start=2>; rel="last", <https://www.zotero.org/users/123/items/top>; rel="alternate" `)
+	headResp := httpmock.NewStringResponse(200, "")
+	headResp.Header.Set("Total-Results", `80`)
 
-	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/items/top",
-		httpmock.ResponderFromResponse(page1Resp))
+	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/items/top?limit=1",
+		httpmock.ResponderFromResponse(headResp))
 
-	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/items/top?start=2",
+	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/items/top?start=0&limit=50",
+		httpmock.NewStringResponder(200, page1))
+
+	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/items/top?start=50&limit=50",
 		httpmock.NewStringResponder(200, page2))
 
 	c := Client{"test-api-key", "TSTUSR", 123}
 	items := c.GetItems()
 
-	Assert(t, is.Equal(httpmock.GetTotalCallCount(), 2))
+	Assert(t, is.Equal(httpmock.GetTotalCallCount(), 3))
 
 	Assert(t, is.Len(items, 2))
 
