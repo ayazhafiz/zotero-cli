@@ -12,7 +12,7 @@ const page1 = `[{
         "version": 18,
         "library": {
             "type": "user",
-            "id": "TSTUSR",
+            "id": 123,
             "name": "janedoe",
             "links": {
                 "alternate": {
@@ -23,7 +23,7 @@ const page1 = `[{
         },
         "links": {
             "self": {
-                "href": "https://api.zotero.org/users/TSTUSR/items/KEYA",
+                "href": "https://api.zotero.org/users/123/items/KEYA",
                 "type": "application/json"
             },
             "alternate": {
@@ -31,7 +31,7 @@ const page1 = `[{
                 "type": "text/html"
             },
             "attachment": {
-                "href": "https://api.zotero.org/users/TSTUSR/items/VUNPABHE",
+                "href": "https://api.zotero.org/users/123/items/VUNPABHE",
                 "type": "application/json",
                 "attachmentType": "application/pdf",
                 "attachmentSize": 1291508
@@ -96,7 +96,7 @@ const page2 = `[{
         "version": 25,
         "library": {
             "type": "user",
-            "id": "TSTUSR",
+            "id": 123,
             "name": "janedoe",
             "links": {
                 "alternate": {
@@ -107,7 +107,7 @@ const page2 = `[{
         },
         "links": {
             "self": {
-                "href": "https://api.zotero.org/users/TSTUSR/items/KEYB",
+                "href": "https://api.zotero.org/users/123/items/KEYB",
                 "type": "application/json"
             },
             "alternate": {
@@ -115,7 +115,7 @@ const page2 = `[{
                 "type": "text/html"
             },
             "attachment": {
-                "href": "https://api.zotero.org/users/TSTUSR/items/UX7DDNBG",
+                "href": "https://api.zotero.org/users/123/items/UX7DDNBG",
                 "type": "application/json",
                 "attachmentType": "application/pdf",
                 "attachmentSize": 395812
@@ -199,15 +199,15 @@ func TestGetItems(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	page1Resp := httpmock.NewStringResponse(200, page1)
-	page1Resp.Header.Set("Link", `<https://api.zotero.org/users/TSTUSR/items/top?start=2>; rel="next", <https://api.zotero.org/users/TSTUSR/items/top?start=2>; rel="last", <https://www.zotero.org/users/TSTUSR/items/top>; rel="alternate" `)
+	page1Resp.Header.Set("Link", `<https://api.zotero.org/users/123/items/top?start=2>; rel="next", <https://api.zotero.org/users/123/items/top?start=2>; rel="last", <https://www.zotero.org/users/123/items/top>; rel="alternate" `)
 
-	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/TSTUSR/items/top",
+	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/items/top",
 		httpmock.ResponderFromResponse(page1Resp))
 
-	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/TSTUSR/items/top?start=2",
+	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/items/top?start=2",
 		httpmock.NewStringResponder(200, page2))
 
-	c := NewClient("test-api-key", "TSTUSR")
+	c := Client{"test-api-key", "TSTUSR", 123}
 	items := c.GetItems()
 
 	Assert(t, is.Equal(httpmock.GetTotalCallCount(), 2))
@@ -218,7 +218,7 @@ func TestGetItems(t *testing.T) {
 
 	Assert(t, is.Equal(next700.Key.Value, "KEYA"))
 	Assert(t, is.Equal(next700.Title, "The next 700 programming languages"))
-	Assert(t, next700.Type.Is(JournalArticle))
+	Assert(t, next700.Type.Is(journalArticle))
 	Assert(t, is.Equal(next700.AbstractNote, "ABSTRACTA"))
 	Assert(t, is.DeepEqual(next700.Authors, []Author{
 		{"P. J.", "Landin"},
@@ -232,7 +232,7 @@ func TestGetItems(t *testing.T) {
 
 	Assert(t, is.Equal(extCrisis.Key.Value, "KEYB"))
 	Assert(t, is.Equal(extCrisis.Title, "An existential crisis resolved: type inference for first-class existential types"))
-	Assert(t, extCrisis.Type.Is(JournalArticle))
+	Assert(t, extCrisis.Type.Is(journalArticle))
 	Assert(t, is.Equal(extCrisis.AbstractNote, "ABSTRACTB"))
 	Assert(t, is.DeepEqual(extCrisis.Authors, []Author{
 		{"Richard A.", "Eisenberg"},

@@ -5,41 +5,41 @@ import (
 )
 
 const (
-	Artwork = iota
-	AudioRecording
-	Bill
-	BlogPost
-	Book
-	BookSection
-	Case
-	ComputerProgram
-	ConferencePaper
-	DictionaryEntry
-	Document
-	Email
-	EncyclopediaArticle
-	Film
-	ForumPost
-	Hearing
-	InstantMessage
-	Interview
-	JournalArticle
-	Letter
-	MagazineArticle
-	Manuscript
-	Map
-	NewspaperArticle
-	Note
-	Patent
-	Podcast
-	Presentation
-	RadioBroadcast
-	Report
-	Statute
-	TVBroadcast
-	Thesis
-	VideoRecording
-	Webpage
+	artwork = iota
+	audioRecording
+	bill
+	blogPost
+	book
+	bookSection
+	caseItem
+	computerProgram
+	conferencePaper
+	dictionaryEntry
+	document
+	email
+	encyclopediaArticle
+	film
+	forumPost
+	hearing
+	instantMessage
+	interview
+	journalArticle
+	letter
+	magazineArticle
+	manuscript
+	mapItem
+	newspaperArticle
+	note
+	patent
+	podcast
+	presentation
+	radioBroadcast
+	report
+	statute
+	tvBroadcast
+	thesis
+	videoRecording
+	webpage
 )
 
 type ItemType struct {
@@ -52,75 +52,75 @@ func ItemTypeOfString(s string) (ItemType, error) {
 	i := -1
 	switch s {
 	case "artwork":
-		i = Artwork
+		i = artwork
 	case "audioRecording":
-		i = AudioRecording
+		i = audioRecording
 	case "bill":
-		i = Bill
+		i = bill
 	case "blogPost":
-		i = BlogPost
+		i = blogPost
 	case "book":
-		i = Book
+		i = book
 	case "bookSection":
-		i = BookSection
+		i = bookSection
 	case "case":
-		i = Case
+		i = caseItem
 	case "computerProgram":
-		i = ComputerProgram
+		i = computerProgram
 	case "conferencePaper":
-		i = ConferencePaper
+		i = conferencePaper
 	case "dictionaryEntry":
-		i = DictionaryEntry
+		i = dictionaryEntry
 	case "document":
-		i = Document
+		i = document
 	case "email":
-		i = Email
+		i = email
 	case "encyclopediaArticle":
-		i = EncyclopediaArticle
+		i = encyclopediaArticle
 	case "film":
-		i = Film
+		i = film
 	case "forumPost":
-		i = ForumPost
+		i = forumPost
 	case "hearing":
-		i = Hearing
+		i = hearing
 	case "instantMessage":
-		i = InstantMessage
+		i = instantMessage
 	case "interview":
-		i = Interview
+		i = interview
 	case "journalArticle":
-		i = JournalArticle
+		i = journalArticle
 	case "letter":
-		i = Letter
+		i = letter
 	case "magazineArticle":
-		i = MagazineArticle
+		i = magazineArticle
 	case "manuscript":
-		i = Manuscript
+		i = manuscript
 	case "map":
-		i = Map
+		i = mapItem
 	case "newspaperArticle":
-		i = NewspaperArticle
+		i = newspaperArticle
 	case "note":
-		i = Note
+		i = note
 	case "patent":
-		i = Patent
+		i = patent
 	case "podcast":
-		i = Podcast
+		i = podcast
 	case "presentation":
-		i = Presentation
+		i = presentation
 	case "radioBroadcast":
-		i = RadioBroadcast
+		i = radioBroadcast
 	case "report":
-		i = Report
+		i = report
 	case "statute":
-		i = Statute
+		i = statute
 	case "tvBroadcast":
-		i = TVBroadcast
+		i = tvBroadcast
 	case "thesis":
-		i = Thesis
+		i = thesis
 	case "videoRecording":
-		i = VideoRecording
+		i = videoRecording
 	case "webpage":
-		i = Webpage
+		i = webpage
 	default:
 		return ItemType{i}, errors.New("unknown item type \"" + s + "\"")
 	}
@@ -131,75 +131,75 @@ func ItemTypeOfString(s string) (ItemType, error) {
 // API.
 func (it *ItemType) ApiStringOfItemType() string {
 	switch it.i {
-	case Artwork:
+	case artwork:
 		return "artwork"
-	case AudioRecording:
+	case audioRecording:
 		return "audioRecording"
-	case Bill:
+	case bill:
 		return "bill"
-	case BlogPost:
+	case blogPost:
 		return "blogPost"
-	case Book:
+	case book:
 		return "book"
-	case BookSection:
+	case bookSection:
 		return "bookSection"
-	case Case:
+	case caseItem:
 		return "case"
-	case ComputerProgram:
+	case computerProgram:
 		return "computerProgram"
-	case ConferencePaper:
+	case conferencePaper:
 		return "conferencePaper"
-	case DictionaryEntry:
+	case dictionaryEntry:
 		return "dictionaryEntry"
-	case Document:
+	case document:
 		return "document"
-	case Email:
+	case email:
 		return "email"
-	case EncyclopediaArticle:
+	case encyclopediaArticle:
 		return "encyclopediaArticle"
-	case Film:
+	case film:
 		return "film"
-	case ForumPost:
+	case forumPost:
 		return "forumPost"
-	case Hearing:
+	case hearing:
 		return "hearing"
-	case InstantMessage:
+	case instantMessage:
 		return "instantMessage"
-	case Interview:
+	case interview:
 		return "interview"
-	case JournalArticle:
+	case journalArticle:
 		return "journalArticle"
-	case Letter:
+	case letter:
 		return "letter"
-	case MagazineArticle:
+	case magazineArticle:
 		return "magazineArticle"
-	case Manuscript:
+	case manuscript:
 		return "manuscript"
-	case Map:
+	case mapItem:
 		return "map"
-	case NewspaperArticle:
+	case newspaperArticle:
 		return "newspaperArticle"
-	case Note:
+	case note:
 		return "note"
-	case Patent:
+	case patent:
 		return "patent"
-	case Podcast:
+	case podcast:
 		return "podcast"
-	case Presentation:
+	case presentation:
 		return "presentation"
-	case RadioBroadcast:
+	case radioBroadcast:
 		return "radioBroadcast"
-	case Report:
+	case report:
 		return "report"
-	case Statute:
+	case statute:
 		return "statute"
-	case TVBroadcast:
+	case tvBroadcast:
 		return "tvBroadcast"
-	case Thesis:
+	case thesis:
 		return "thesis"
-	case VideoRecording:
+	case videoRecording:
 		return "videoRecording"
-	case Webpage:
+	case webpage:
 		return "webpage"
 	default:
 		panic("unreachable")
@@ -209,75 +209,75 @@ func (it *ItemType) ApiStringOfItemType() string {
 // Converts an `ItemType` to an english-localized string.
 func (it *ItemType) EnglishStringOfItemType() string {
 	switch it.i {
-	case Artwork:
+	case artwork:
 		return "Artwork"
-	case AudioRecording:
+	case audioRecording:
 		return "Audio Recording"
-	case Bill:
+	case bill:
 		return "Bill"
-	case BlogPost:
+	case blogPost:
 		return "Blog Post"
-	case Book:
+	case book:
 		return "Book"
-	case BookSection:
+	case bookSection:
 		return "Book Section"
-	case Case:
+	case caseItem:
 		return "Case"
-	case ComputerProgram:
+	case computerProgram:
 		return "Computer Program"
-	case ConferencePaper:
+	case conferencePaper:
 		return "Conference Paper"
-	case DictionaryEntry:
+	case dictionaryEntry:
 		return "Dictionary Entry"
-	case Document:
+	case document:
 		return "Document"
-	case Email:
+	case email:
 		return "E-mail"
-	case EncyclopediaArticle:
+	case encyclopediaArticle:
 		return "Encyclopedia Article"
-	case Film:
+	case film:
 		return "Film"
-	case ForumPost:
+	case forumPost:
 		return "Forum Post"
-	case Hearing:
+	case hearing:
 		return "Hearing"
-	case InstantMessage:
+	case instantMessage:
 		return "Instant Message"
-	case Interview:
+	case interview:
 		return "Interview"
-	case JournalArticle:
+	case journalArticle:
 		return "Journal Article"
-	case Letter:
+	case letter:
 		return "Letter"
-	case MagazineArticle:
+	case magazineArticle:
 		return "Magazine Article"
-	case Manuscript:
+	case manuscript:
 		return "Manuscript"
-	case Map:
+	case mapItem:
 		return "Map"
-	case NewspaperArticle:
+	case newspaperArticle:
 		return "Newspaper Article"
-	case Note:
+	case note:
 		return "Note"
-	case Patent:
+	case patent:
 		return "Patent"
-	case Podcast:
+	case podcast:
 		return "Podcast"
-	case Presentation:
+	case presentation:
 		return "Presentation"
-	case RadioBroadcast:
+	case radioBroadcast:
 		return "Radio Broadcast"
-	case Report:
+	case report:
 		return "Report"
-	case Statute:
+	case statute:
 		return "Statute"
-	case TVBroadcast:
+	case tvBroadcast:
 		return "TV Broadcast"
-	case Thesis:
+	case thesis:
 		return "Thesis"
-	case VideoRecording:
+	case videoRecording:
 		return "Video Recording"
-	case Webpage:
+	case webpage:
 		return "Web Page"
 	default:
 		panic("unreachable")

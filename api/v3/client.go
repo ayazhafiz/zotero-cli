@@ -12,8 +12,15 @@ type Client struct {
 	// A user-provisioned API key.
 	apiKey string
 
+	// The user this key belongs to.
+	username string
+
 	// The user ID.
-	userId ItemKey
+	userId int
+}
+
+func (c *Client) ApiKey() string {
+	return c.apiKey
 }
 
 // An ItemKey is the Zotero API's opaque handle to an item in a library.
@@ -42,7 +49,7 @@ func (c *Client) getUriWithHeaders(uri string) ([]byte, http.Header) {
 // Sends a `GET` request to `subroute` and returns the raw bytes of the response
 // body.
 func (c *Client) get(subroute string) []byte {
-	uri := fmt.Sprintf("%s/users/%s/%s", baseApi, c.userId.Value, subroute)
+	uri := fmt.Sprintf("%s/users/%d/%s", baseApi, c.userId, subroute)
 	bytes, _ := c.getUriWithHeaders(uri)
 	return bytes
 }
@@ -54,7 +61,7 @@ var reNextPage = regexp.MustCompile(`.*<(.*)>; rel="next"`)
 // byte reponses, one per page.
 func (c *Client) getWithPagination(subroute string) [][]byte {
 	var allBytes [][]byte
-	nextPage := fmt.Sprintf("%s/users/%s/%s", baseApi, c.userId.Value, subroute)
+	nextPage := fmt.Sprintf("%s/users/%d/%s", baseApi, c.userId, subroute)
 	for true {
 		bytes, headers := c.getUriWithHeaders(nextPage)
 		allBytes = append(allBytes, bytes)
@@ -65,8 +72,4 @@ func (c *Client) getWithPagination(subroute string) [][]byte {
 		nextPage = matchNextPage[1]
 	}
 	return allBytes
-}
-
-func NewClient(apiKey string, userId string) Client {
-	return Client{apiKey: apiKey, userId: ItemKey{Value: userId}}
 }

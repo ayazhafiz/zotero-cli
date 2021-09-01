@@ -13,7 +13,7 @@ const toplevels = `[
         "version": 3,
         "library": {
             "type": "user",
-            "id": "000",
+            "id": "123",
             "name": "TSTUSR",
             "links": {
                 "alternate": {
@@ -24,7 +24,7 @@ const toplevels = `[
         },
         "links": {
             "self": {
-                "href": "https://api.zotero.org/users/000/collections/KEYA",
+                "href": "https://api.zotero.org/users/123/collections/KEYA",
                 "type": "application/json"
             },
             "alternate": {
@@ -49,7 +49,7 @@ const toplevels = `[
         "version": 3,
         "library": {
             "type": "user",
-            "id": "000",
+            "id": "123",
             "name": "TSTUSR",
             "links": {
                 "alternate": {
@@ -60,7 +60,7 @@ const toplevels = `[
         },
         "links": {
             "self": {
-                "href": "https://api.zotero.org/users/000/collections/KEYB",
+                "href": "https://api.zotero.org/users/123/collections/KEYB",
                 "type": "application/json"
             },
             "alternate": {
@@ -89,7 +89,7 @@ const sub_fashion = `
         "version": 3,
         "library": {
             "type": "user",
-            "id": "000",
+            "id": "123",
             "name": "TSTUSR",
             "links": {
                 "alternate": {
@@ -100,7 +100,7 @@ const sub_fashion = `
         },
         "links": {
             "self": {
-                "href": "https://api.zotero.org/users/000/collections/KEYC",
+                "href": "https://api.zotero.org/users/123/collections/KEYC",
                 "type": "application/json"
             },
             "alternate": {
@@ -126,12 +126,12 @@ func TestGetCollections(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/TSTUSR/collections/top",
+	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/collections/top",
 		httpmock.NewBytesResponder(200, []byte(toplevels)))
-	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/TSTUSR/collections/KEYA/collections",
+	httpmock.RegisterResponder("GET", "https://api.zotero.org/users/123/collections/KEYA/collections",
 		httpmock.NewStringResponder(200, sub_fashion))
 
-	c := NewClient("test-api-key", "TSTUSR")
+	c := Client{"test-api-key", "TSTUSR", 123}
 	collections := c.GetCollections()
 
 	assert.Assert(t, is.Equal(httpmock.GetTotalCallCount(), 2))
